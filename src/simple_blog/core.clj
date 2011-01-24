@@ -21,22 +21,20 @@
   )
 )
 
-; Function to display all posts 
-(defn display-posts []
-  (layout "Simple Blog" 
-    (html
-      (for [post (select-posts)]
-        (html-post post)
-      )
-    )
-  )
-)
-
-; Function to handle creation of blog post on postback
-(defn create-post [title body]
-  (if-let [id (insert-post title body)]
-    {:status 302 :headers {"Location" (str "/post/" id)}}
-    {:status 302 :headers {"Location" "/" }}
+; Setup general page layout and include any js and css files we need
+(defn layout [title body]
+  (html
+    [:head 
+      [:title title]
+      (include-css "/css/blog.css")
+    ]
+    [:body
+      [:h1 
+        [:a {:href "/"} "Simple Blog"]
+      ]
+      body
+      [:p [:a {:href "/post/new"} "New post"]]
+    ] 
   )
 )
 
@@ -56,26 +54,29 @@
   )
 )
 
+; Function to display all posts 
+(defn display-posts []
+  (layout "Simple Blog" 
+    (html
+      (for [post (select-posts)]
+        (html-post post)
+      )
+    )
+  )
+)
+
+; Function to handle creation of blog post on postback
+(defn create-post [title body]
+  (if-let [id (insert-post title body)]
+    {:status 302 :headers {"Location" (str "/post/" id)}}
+    {:status 302 :headers {"Location" "/" }}
+  )
+)
+
 ; Function to display a single blog post
 (defn show-post [id]
   (let [post (select-post id)]
     (layout (:title post) (html-post post))
-  )
-)
-
-; Setup general page layout and include any js and css files we need
-(defn layout [title body]
-  (html
-    [:head 
-      [:title title]
-      (include-css "/public/css/blog.css")
-    ]
-    [:body
-      [:p [:a {:href "/"} "Home"]]
-      [:h1 title]
-      body
-      [:p [:a {:href "/post/new"} "New post"]]
-    ] 
   )
 )
 
@@ -85,6 +86,7 @@
   (GET "/post/new" [] (new-post))
   (GET "/post/:id" [id] (show-post id))
   (POST "/post/submit" [title body] (create-post title body))
+  (route/files "/" {:root "public"})
   (GET "/" [] (display-posts))
   (route/not-found "Page is not here, no matter how hard we search") 
 )
