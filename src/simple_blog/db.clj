@@ -83,3 +83,36 @@
     )
   )
 )
+
+(defn create-users []
+  (create-table :users
+    [:id :int "IDENTITY" "PRIMARY KEY"]
+    [:name :varchar "NOT NULL"]
+    [:pass :varchar "NOT NULL"]
+    [:created_at :datetime]
+    [:last_login :datetime]
+  )
+)
+
+(defn insert-user [name pass]
+  (with-connection db
+    (transaction
+      (insert-values :users
+        [:name :pass :created_at]
+        [name pass (now)]
+      )
+      (last-created-id)
+    )
+  )
+)
+
+(defn is-user? [name pass]
+  (let [id 
+    (first
+      (with-connection db
+        (sql-query [(str "select id from users where name = '" name "' and pass = '" pass "'")])
+      )
+    )]
+    (if id true false)
+  )
+)
