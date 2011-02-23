@@ -7,6 +7,12 @@
 (defn new-post []
   (html
     (form-to [:post "/post/submit"]
+      (label "name" "Username")
+      [:br]
+      (text-field "name")
+      (label "pass" "Password")
+      [:br]
+      (password-field "pass")
       (label "title" "Post Title")
       [:br]
       (text-field "title")
@@ -66,10 +72,13 @@
 )
 
 ; Function to handle creation of blog post on postback
-(defn create-post [title body]
-  (if-let [id (insert-post title body)]
-    {:status 302 :headers {"Location" (str "/post/" id)}}
-    {:status 302 :headers {"Location" "/" }}
+(defn create-post [name pass title body]
+  (if (is-user? name pass)
+    (if-let [id (insert-post title body)]
+      {:status 302 :headers {"Location" (str "/post/" id)}}
+      {:status 302 :headers {"Location" "/" }}
+    )
+    {:status 302 :headers {"Location" "/"}}
   )
 )
 
@@ -85,7 +94,7 @@
   "Create and view blog posts"
   (GET "/post/new" [] (new-post))
   (GET "/post/:id" [id] (show-post id))
-  (POST "/post/submit" [title body] (create-post title body))
+  (POST "/post/submit" [name pass title body] (create-post name pass title body))
   (route/files "/" {:root "public"})
   (GET "/" [] (display-posts))
   (route/not-found "Page is not here, no matter how hard we search") 
