@@ -27,19 +27,30 @@
   )
 )
 
+; Function to create html for a sidebar
+(defn display-sidebar []
+  (html
+    [:section {:class "sidebar"}
+      [:p [:a {:href "/post/new"} "New post"]]
+    ]
+  )
+)
+
 ; Setup general page layout and include any js and css files we need
 (defn layout [title body]
-  (html
+  (html5
     [:head 
       [:title title]
       (include-css "/css/blog.css")
     ]
     [:body
-      [:h1 
-        [:a {:href "/"} "Simple Blog"]
+      [:header
+        [:h1 
+          [:a {:href "/"} "Simple Blog"]
+        ]
       ]
+      (display-sidebar)
       body
-      [:p [:a {:href "/post/new"} "New post"]]
     ] 
   )
 )
