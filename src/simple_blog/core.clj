@@ -3,30 +3,6 @@
   (:require [compojure.route :as route])
 )
 
-; Function to create a form for entering blog posts
-(defn new-post []
-  (html
-    (form-to [:post "/post/submit"]
-      (label "name" "Username")
-      [:br]
-      (text-field "name")
-      (label "pass" "Password")
-      [:br]
-      (password-field "pass")
-      (label "title" "Post Title")
-      [:br]
-      (text-field "title")
-      [:br]
-      (label "body" "Post")
-      [:br]
-      (text-area {:rows 5 :cols 26} "body")
-      [:br]
-      (submit-button "Save")
-    )
-    [:p [:a {:href "/"} "Cancel"]]
-  )
-)
-
 ; Function to create html for a sidebar
 (defn display-sidebar []
   (html
@@ -52,6 +28,36 @@
       (display-sidebar)
       body
     ] 
+  )
+)
+
+; Function to create a form for entering blog posts
+(defn new-post []
+  (layout "Create New Post"
+    (html
+      (form-to {:class "new-post"} [:post "/post/submit"]
+        [:div {:class "form-item"}
+          (label "name" "Username")
+          (text-field "name")
+        ]
+        [:div {:class "form-item"}
+          (label "pass" "Password")
+          (password-field "pass")
+        ]
+        [:div {:class "form-item"}
+          (label "title" "Post Title")
+          (text-field "title")
+        ]
+        [:div {:class "form-item"}
+          (label "body" "Post")
+          (text-area {:rows 5 :cols 26} "body")
+        ]
+        [:div {:class "form-buttons"}
+          (submit-button "Save")
+          [:p {:class "inline"} [:a {:href "/"} "Cancel"]]
+        ]
+      )
+    )
   )
 )
 

@@ -18,7 +18,8 @@ h2 {
   margin: 0;
 }
 
-.post {
+.post,
+.new-post {
   width: 500px;
   background-color: #eee;
   color: black;
@@ -36,4 +37,37 @@ h2 {
   background-color: #eee;
   -moz-border-radius: 10px;
   border-radius: 10px;
+}
+
+label {
+  float: left;
+  width: 80px;
+  padding-top: 4px;
+  margin-right: 10px;
+  text-align: right;
+}
+
+.right {
+  float: right;
+}
+
+.left {
+  float: left;
+}
+
+.inline {
+  display: inline;
+  margin: 0 10px;
+}
+
+input[type="submit"] {
+  display: inline;
+}
+
+.form-item {
+  margin: 0 0 10px 0;
+}
+
+.form-buttons {
+  padding-left: 173px;
 }
