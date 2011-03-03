@@ -76,6 +76,17 @@
   )
 )
 
+(defn post-update [id title body]
+  (with-connection db
+    (transaction
+      (update-values :posts
+        ["id=?" id]
+        {:title title :body body}
+      )
+    )
+  )
+)
+
 (defn select-post [id]
   (first
     (with-connection db

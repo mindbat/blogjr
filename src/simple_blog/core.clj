@@ -1,34 +1,6 @@
 (ns simple-blog.core
-  (:use compojure.core, ring.adapter.jetty, hiccup.core, hiccup.form-helpers, hiccup.page-helpers, simple-blog.db)
+  (:use compojure.core, ring.adapter.jetty, hiccup.core, hiccup.form-helpers, hiccup.page-helpers, simple-blog.db, simple-blog.view)
   (:require [compojure.route :as route])
-)
-
-; Function to create html for a sidebar
-(defn display-sidebar []
-  (html
-    [:section {:class "sidebar"}
-      [:p [:a {:href "/post/new"} "New post"]]
-    ]
-  )
-)
-
-; Setup general page layout and include any js and css files we need
-(defn layout [title body]
-  (html5
-    [:head 
-      [:title title]
-      (include-css "/css/blog.css")
-    ]
-    [:body
-      [:header
-        [:h1 
-          [:a {:href "/"} "Simple Blog"]
-        ]
-      ]
-      (display-sidebar)
-      body
-    ] 
-  )
 )
 
 ; Function to create a form for entering blog posts
@@ -61,22 +33,6 @@
   )
 )
 
-; Function to convert a post to html
-(defn html-post [post]
-  (html
-    [:div {:class "post"}
-      [:h2
-        [:a
-          {:href (str "/post/" (:id post))} 
-          (:title post)
-        ]
-      ]
-      [:p (:body post)]
-      [:div {:class "date"} (:created_at post)]
-    ]
-  )
-)
-
 ; Function to display all posts 
 (defn display-posts []
   (layout "Simple Blog" 
@@ -99,6 +55,17 @@
   )
 )
 
+; Function to handle update of blog post on postback
+(defn update-post [id name pass title body]
+  (if (is-user? name pass)
+    (if (post-update id title body)
+      {:status 302 :headers {"Location" (str "/post/" id)}}
+      {:status 302 :headers {"Location" "/" }}
+    )
+    {:status 302 :headers {"Location" "/"}}
+  )
+)
+
 ; Function to display a single blog post
 (defn show-post [id]
   (let [post (select-post id)]
@@ -106,12 +73,49 @@
   )
 )
 
+; Function to create a form for editing blog posts
+(defn edit-post [id]
+  (let [post (select-post id)]
+    (layout "Edit Post"
+      (html
+        (form-to {:class "update-post"} [:post "/post/update"]
+          [:div {:class "form-item"}
+            (hidden-field "id" id)
+          ]
+          [:div {:class "form-item"}
+            (label "name" "Username")
+            (text-field "name")
+          ]
+          [:div {:class "form-item"}
+            (label "pass" "Password")
+            (password-field "pass")
+          ]
+          [:div {:class "form-item"}
+            (label "title" "Post Title")
+            (text-field "title" (:title post))
+          ]
+          [:div {:class "form-item"}
+            (label "body" "Post")
+            (text-area {:rows 5 :cols 26} "body" (:body post))
+          ]
+          [:div {:class "form-buttons"}
+            (submit-button "Save")
+            [:p {:class "inline"} [:a {:href "/"} "Cancel"]]
+          ]
+        )
+      )
+    )
+  )
+)
+
 ; Url handlers for viewing single blog posts, viewing all blog posts, and entering blog posts
 (defroutes blog-app
   "Create and view blog posts"
   (GET "/post/new" [] (new-post))
+  (GET "/post/edit/:id" [id] (edit-post id))
   (GET "/post/:id" [id] (show-post id))
   (POST "/post/submit" [name pass title body] (create-post name pass title body))
+  (POST "/post/update" [id name pass title body] (update-post id name pass title body))
   (route/files "/" {:root "public"})
   (GET "/" [] (display-posts))
   (route/not-found "Page is not here, no matter how hard we search") 
