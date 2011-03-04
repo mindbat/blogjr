@@ -45,3 +45,23 @@
     ]
   )
 )
+
+; Function to display a set of links to post actions
+(defn post-actions [id]
+  [:div {:class "post-actions"}
+    [:ul
+      [:li
+        [:a 
+          {:href (str "/post/edit/" id)} 
+          "Edit Post"
+        ]
+      ]
+      [:li
+        [:a
+          {:href (str "/post/delete/" id)}
+          "Delete Post"
+        ]
+      ]
+    ]
+  ]
+)

@@ -71,3 +71,18 @@ input[type="submit"] {
 .form-buttons {
   padding-left: 173px;
 }
+
+.post-actions {
+  padding-left: 10px;
+}
+
+.post-actions ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-actions ul li {
+  display: inline;
+  padding: 0 10px;
+}

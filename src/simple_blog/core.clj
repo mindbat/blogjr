@@ -69,7 +69,13 @@
 ; Function to display a single blog post
 (defn show-post [id]
   (let [post (select-post id)]
-    (layout (:title post) (html-post post))
+    (layout 
+      (:title post) 
+      (html
+        (html-post post)
+        (post-actions (:id post))
+      )
+    )
   )
 )
 
