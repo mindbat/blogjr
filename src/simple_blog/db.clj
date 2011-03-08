@@ -127,3 +127,11 @@
     (if id true false)
   )
 )
+
+(defn delete-post [id]
+  (with-connection db
+    (transaction
+      (delete-rows :posts ["id=?" id])  
+    )
+  )
+)

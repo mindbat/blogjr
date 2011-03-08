@@ -22,7 +22,7 @@
         ]
         [:div {:class "form-item"}
           (label "body" "Post")
-          (text-area {:rows 5 :cols 26} "body")
+          (text-area {:rows 10 :cols 58} "body")
         ]
         [:div {:class "form-buttons"}
           (submit-button "Save")
@@ -102,7 +102,7 @@
           ]
           [:div {:class "form-item"}
             (label "body" "Post")
-            (text-area {:rows 5 :cols 26} "body" (:body post))
+            (text-area {:rows 10 :cols 58} "body" (:body post))
           ]
           [:div {:class "form-buttons"}
             (submit-button "Save")
@@ -114,6 +114,14 @@
   )
 )
 
+; Function to delete a post
+(defn post-delete [id]
+  (if (delete-post id)
+    {:status 302 :headers {"Location" "/" }}
+    {:status 302 :headers {"Location" (str "/post/" id)}}
+  )
+)
+
 ; Url handlers for viewing single blog posts, viewing all blog posts, and entering blog posts
 (defroutes blog-app
   "Create and view blog posts"
@@ -122,6 +130,7 @@
   (GET "/post/:id" [id] (show-post id))
   (POST "/post/submit" [name pass title body] (create-post name pass title body))
   (POST "/post/update" [id name pass title body] (update-post id name pass title body))
+  (GET "/post/delete/:id" [id] (post-delete id))
   (route/files "/" {:root "public"})
   (GET "/" [] (display-posts))
   (route/not-found "Page is not here, no matter how hard we search") 
