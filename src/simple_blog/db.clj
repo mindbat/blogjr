@@ -135,3 +135,32 @@
     )
   )
 )
+
+(defn create-comments []
+  (create-table :comments
+    [:id :int "IDENTITY" "PRIMARY KEY"]
+    [:post_id :int "NOT NULL"]
+    [:body :varchar "NOT NULL"]
+    [:created_at :datetime]
+    [:author :varchar "NOT NULL"]
+    ["FOREIGN KEY" "(post_id)" "REFERENCES" :posts "(id)"]
+  )
+)
+
+(defn insert-comment [post_id body author]
+  (with-connection db
+    (transaction
+      (insert-values :comments
+        [:post_id :body :author :created_at]
+        [post_id body author (now)]
+      )
+      (last-created-id)
+    )
+  )
+)
+
+(defn select-comments [post_id]
+  (with-connection db
+    (sql-query [(str "select * from comments where post_id = " post_id)])
+  )
+)
