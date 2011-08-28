@@ -1,6 +1,6 @@
-(ns simple-blog.core
+(ns quick-blog.core
   (:use compojure.core, hiccup.core, hiccup.form-helpers, hiccup.page-helpers,
-    simple-blog.db, simple-blog.view)
+    quick-blog.db, quick-blog.view)
   (:require [compojure.route :as route]
             [compojure.handler :as handler])
 )

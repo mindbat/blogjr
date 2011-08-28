@@ -1,4 +1,4 @@
-(ns simple-blog.view
+(ns quick-blog.view
   (:use hiccup.core, hiccup.form-helpers, hiccup.page-helpers)
 )
 
@@ -21,7 +21,7 @@
     [:body
       [:header
         [:h1 
-          [:a {:href "/"} "Simple Blog"]
+          [:a {:href "/"} "Quick Blog"]
         ]
       ]
       (display-sidebar)

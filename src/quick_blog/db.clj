@@ -1,4 +1,4 @@
-(ns simple-blog.db
+(ns quick-blog.db
   (:use clojure.contrib.sql)
 )
 
