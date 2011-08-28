@@ -1,6 +1,8 @@
 (ns simple-blog.core
-  (:use compojure.core, ring.adapter.jetty, hiccup.core, hiccup.form-helpers, hiccup.page-helpers, simple-blog.db, simple-blog.view)
-  (:require [compojure.route :as route])
+  (:use compojure.core, hiccup.core, hiccup.form-helpers, hiccup.page-helpers,
+    simple-blog.db, simple-blog.view)
+  (:require [compojure.route :as route]
+            [compojure.handler :as handler])
 )
 
 ; Function to create a form for entering blog posts
@@ -123,7 +125,7 @@
 )
 
 ; Url handlers for viewing single blog posts, viewing all blog posts, and entering blog posts
-(defroutes blog-app
+(defroutes main-routes 
   "Create and view blog posts"
   (GET "/post/new" [] (new-post))
   (GET "/post/edit/:id" [id] (edit-post id))
@@ -131,7 +133,12 @@
   (POST "/post/submit" [name pass title body] (create-post name pass title body))
   (POST "/post/update" [id name pass title body] (update-post id name pass title body))
   (GET "/post/delete/:id" [id] (post-delete id))
-  (route/files "/" {:root "public"})
   (GET "/" [] (display-posts))
+  (route/resources "/")
   (route/not-found "Page is not here, no matter how hard we search") 
+)
+
+; Add the route handlers to the site
+(def app
+  (handler/site main-routes)
 )
