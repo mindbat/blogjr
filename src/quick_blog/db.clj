@@ -2,18 +2,23 @@
   (:use clojure.contrib.sql)
 )
 
-(def db {:classname "org.hsqldb.jdbcDriver"
-         :subprotocol "hsqldb"
-         :subname "file:/var/tmp/simpleblog-db"
-        }
+(def db
+  {:subprotocol "postgresql" 
+   :subname "//localhost:5432/quick_blog"
+   :username "quick_blog"
+   :password ""
+   :classname "org.postgresql.jdbcDriver"
+  }
 )
 
 (defn create-posts []
-  (create-table :posts
-    [:id :int "IDENTITY" "PRIMARY KEY"]
-    [:title :varchar "NOT NULL"]
-    [:body :varchar "NOT NULL"]
-    [:created_at :datetime]
+  (with-connection db
+    (create-table :posts
+      [:id "SERIAL" "PRIMARY KEY"]
+      [:title :varchar "NOT NULL"]
+      [:body :varchar "NOT NULL"]
+      [:created_at :timestamp]
+    )
   )
 )
 
@@ -96,12 +101,14 @@
 )
 
 (defn create-users []
-  (create-table :users
-    [:id :int "IDENTITY" "PRIMARY KEY"]
-    [:name :varchar "NOT NULL"]
-    [:pass :varchar "NOT NULL"]
-    [:created_at :datetime]
-    [:last_login :datetime]
+  (with-connection db
+    (create-table :users
+      [:id "SERIAL" "PRIMARY KEY"]
+      [:name :varchar "NOT NULL"]
+      [:pass :varchar "NOT NULL"]
+      [:created_at :timestamp]
+      [:last_login :timestamp]
+    )
   )
 )
 
@@ -137,13 +144,15 @@
 )
 
 (defn create-comments []
-  (create-table :comments
-    [:id :int "IDENTITY" "PRIMARY KEY"]
-    [:post_id :int "NOT NULL"]
-    [:body :varchar "NOT NULL"]
-    [:created_at :datetime]
-    [:author :varchar "NOT NULL"]
-    ["FOREIGN KEY" "(post_id)" "REFERENCES" :posts "(id)"]
+  (with-connection db
+    (create-table :comments
+      [:id "SERIAL" "PRIMARY KEY"]
+      [:post_id :int "NOT NULL"]
+      [:body :varchar "NOT NULL"]
+      [:created_at :timestamp]
+      [:author :varchar "NOT NULL"]
+      ["FOREIGN KEY" "(post_id)" "REFERENCES" :posts "(id)"]
+    )
   )
 )
 
