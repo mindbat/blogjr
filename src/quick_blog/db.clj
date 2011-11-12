@@ -32,10 +32,12 @@
 (defn insert-sample-posts []
   (let [timestamp (now)]
     (seq
-      (insert-values :posts
-        [:title :body :created_at]
-        ["First Post" "This is your first post." timestamp]
-        ["Second Post" "Your second post is longer than the first." timestamp]
+      (with-connection db
+        (insert-values :posts
+          [:title :body :created_at]
+          ["First Post" "This is your first post." timestamp]
+          ["Second Post" "Your second post is longer than the first." timestamp]
+        )
       )
     )
   )
@@ -57,13 +59,13 @@
 
 (defn last-created-id
   "Extract the last created id. Must be called in a transaction
-   that performed an insert. Expects HSQLDB return structure of
+   that performed an insert. Expects PostgreSQL return structure of
    the form [{@p0 id}]."
   []
   (first
     (vals
       (first 
-        (sql-query ["CALL IDENTITY()"])
+        (sql-query ["SELECT lastval();"])
       )
     )
   )
