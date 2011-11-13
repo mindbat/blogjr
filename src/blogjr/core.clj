@@ -1,13 +1,15 @@
 (ns blogjr.core
-  (:use compojure.core, hiccup.core, hiccup.form-helpers, hiccup.page-helpers,
-    blogjr.db, blogjr.view)
+  (:use compojure.core, hiccup.core, hiccup.form-helpers, hiccup.page-helpers)
   (:require [compojure.route :as route]
-            [compojure.handler :as handler])
+            [compojure.handler :as handler]
+            [blogjr.db :as db]
+            [blogjr.view :as view]
+  )
 )
 
 ; Function to create a form for entering blog posts
 (defn new-post []
-  (layout "Create New Post"
+  (view/layout "Create New Post"
     (html
       (form-to {:class "new-post"} [:post "/post/submit"]
         [:div {:class "form-item"}
@@ -37,10 +39,10 @@
 
 ; Function to display all posts 
 (defn display-posts []
-  (layout "Blogjr" 
+  (view/layout "Blogjr" 
     (html
-      (for [post (select-posts)]
-        (html-post post)
+      (for [post (db/select-posts)]
+        (view/html-post post)
       )
     )
   )
@@ -48,8 +50,8 @@
 
 ; Function to handle creation of blog post on postback
 (defn create-post [name pass title body]
-  (if (is-user? name pass)
-    (if-let [id (insert-post title body)]
+  (if (db/is-user? name pass)
+    (if-let [id (db/insert-post title body)]
       {:status 302 :headers {"Location" (str "/post/" id)}}
       {:status 302 :headers {"Location" "/" }}
     )
@@ -59,8 +61,8 @@
 
 ; Function to handle update of blog post on postback
 (defn update-post [id name pass title body]
-  (if (is-user? name pass)
-    (if (post-update id title body)
+  (if (db/is-user? name pass)
+    (if (db/post-update id title body)
       {:status 302 :headers {"Location" (str "/post/" id)}}
       {:status 302 :headers {"Location" "/" }}
     )
@@ -70,12 +72,12 @@
 
 ; Function to display a single blog post
 (defn show-post [id]
-  (let [post (select-post id)]
-    (layout 
+  (let [post (db/select-post id)]
+    (vew/layout 
       (:title post) 
       (html
-        (html-post post)
-        (post-actions (:id post))
+        (view/html-post post)
+        (view/post-actions (:id post))
       )
     )
   )
@@ -83,8 +85,8 @@
 
 ; Function to create a form for editing blog posts
 (defn edit-post [id]
-  (let [post (select-post id)]
-    (layout "Edit Post"
+  (let [post (db/select-post id)]
+    (view/layout "Edit Post"
       (html
         (form-to {:class "update-post"} [:post "/post/update"]
           [:div {:class "form-item"}
@@ -118,7 +120,7 @@
 
 ; Function to delete a post
 (defn post-delete [id]
-  (if (delete-post id)
+  (if (db/delete-post id)
     {:status 302 :headers {"Location" "/" }}
     {:status 302 :headers {"Location" (str "/post/" id)}}
   )
