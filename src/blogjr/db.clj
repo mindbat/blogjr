@@ -1,18 +1,18 @@
-(ns quick-blog.db
+(ns blogjr.db
   (:use clojure.contrib.sql)
 )
 
-(def db
+(def *db*
   {:subprotocol "postgresql" 
-   :subname "//localhost:5432/quick_blog"
-   :username "quick_blog"
+   :subname "//localhost:5432/blogjr"
+   :username "blogjr"
    :password ""
    :classname "org.postgresql.jdbcDriver"
   }
 )
 
 (defn create-posts []
-  (with-connection db
+  (with-connection *db*
     (create-table :posts
       [:id "SERIAL" "PRIMARY KEY"]
       [:title :varchar "NOT NULL"]
@@ -32,7 +32,7 @@
 (defn insert-sample-posts []
   (let [timestamp (now)]
     (seq
-      (with-connection db
+      (with-connection *db*
         (insert-values :posts
           [:title :body :created_at]
           ["First Post" "This is your first post." timestamp]
@@ -45,7 +45,7 @@
 
 (defn select-posts []
   (seq
-    (with-connection db
+    (with-connection *db*
       (with-query-results res ["select * from posts order by id desc"] (doall res)
       )
     )
@@ -72,7 +72,7 @@
 )
 
 (defn insert-post [title body]
-  (with-connection db
+  (with-connection *db*
     (transaction
       (insert-values :posts
         [:title :body :created_at]
@@ -84,7 +84,7 @@
 )
 
 (defn post-update [id title body]
-  (with-connection db
+  (with-connection *db*
     (transaction
       (update-values :posts
         ["id=?" id]
@@ -96,14 +96,14 @@
 
 (defn select-post [id]
   (first
-    (with-connection db
+    (with-connection *db*
       (sql-query [(str "select * from posts where id = " id)])
     )
   )
 )
 
 (defn create-users []
-  (with-connection db
+  (with-connection *db*
     (create-table :users
       [:id "SERIAL" "PRIMARY KEY"]
       [:name :varchar "NOT NULL"]
@@ -115,7 +115,7 @@
 )
 
 (defn insert-user [name pass]
-  (with-connection db
+  (with-connection *db*
     (transaction
       (insert-values :users
         [:name :pass :created_at]
@@ -129,7 +129,7 @@
 (defn is-user? [name pass]
   (let [id 
     (first
-      (with-connection db
+      (with-connection *db*
         (sql-query [(str "select id from users where name = '" name "' and pass = '" pass "'")])
       )
     )]
@@ -138,7 +138,7 @@
 )
 
 (defn delete-post [id]
-  (with-connection db
+  (with-connection *db*
     (transaction
       (delete-rows :posts ["id=?" id])  
     )
@@ -146,7 +146,7 @@
 )
 
 (defn create-comments []
-  (with-connection db
+  (with-connection *db*
     (create-table :comments
       [:id "SERIAL" "PRIMARY KEY"]
       [:post_id :int "NOT NULL"]
@@ -159,7 +159,7 @@
 )
 
 (defn insert-comment [post_id body author]
-  (with-connection db
+  (with-connection *db*
     (transaction
       (insert-values :comments
         [:post_id :body :author :created_at]
@@ -171,7 +171,7 @@
 )
 
 (defn select-comments [post_id]
-  (with-connection db
+  (with-connection *db*
     (sql-query [(str "select * from comments where post_id = " post_id)])
   )
 )

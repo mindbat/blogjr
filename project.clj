@@ -1,5 +1,5 @@
-(defproject quick-blog "1.0.0-SNAPSHOT"
-  :description "A simple, speedy blogging application."
+(defproject blogjr "1.0.0-SNAPSHOT"
+  :description "A simple, speedy blogging application for clojure."
   :dependencies [[org.clojure/clojure "1.2.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
                  [postgresql/postgresql "8.4-702.jdbc4"]
@@ -11,7 +11,7 @@
                  [clj-time "0.3.0"]
                 ]
   :dev-dependencies [[lein-ring "0.4.0"]]
-  :ring {:handler quick-blog.core/app}
+  :ring {:handler blogjr.core/app}
   :repositories {"central-proxy" 
                  "http://repository.sonatype.org/content/repositories/central/"}
 )

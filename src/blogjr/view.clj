@@ -1,4 +1,4 @@
-(ns quick-blog.view
+(ns blogjr.view
   (:use hiccup.core, hiccup.form-helpers, hiccup.page-helpers)
 )
 

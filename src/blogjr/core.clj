@@ -1,6 +1,6 @@
-(ns quick-blog.core
+(ns blogjr.core
   (:use compojure.core, hiccup.core, hiccup.form-helpers, hiccup.page-helpers,
-    quick-blog.db, quick-blog.view)
+    blogjr.db, blogjr.view)
   (:require [compojure.route :as route]
             [compojure.handler :as handler])
 )
@@ -37,7 +37,7 @@
 
 ; Function to display all posts 
 (defn display-posts []
-  (layout "Simple Blog" 
+  (layout "Blogjr" 
     (html
       (for [post (select-posts)]
         (html-post post)
