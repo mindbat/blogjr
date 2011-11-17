@@ -1,5 +1,5 @@
-(defproject blogjr "1.0.0-SNAPSHOT"
-  :description "A simple, speedy blogging application for clojure."
+(defproject blogjr "0.1.0-SNAPSHOT"
+  :description "A simple, speedy blogging application written in clojure."
   :dependencies [[org.clojure/clojure "1.2.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
                  [postgresql/postgresql "8.4-702.jdbc4"]
