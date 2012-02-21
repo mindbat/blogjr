@@ -7,7 +7,6 @@
                  [compojure "0.6.4"]
                  [ring/ring-jetty-adapter "0.3.1"]
                  [hiccup "0.3.6"]
-                 [org.apache.commons/commons-email "1.2"]
                  [clj-time "0.3.0"]
                 ]
   :dev-dependencies [[lein-ring "0.4.0"]]
