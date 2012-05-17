@@ -9,7 +9,7 @@
                  [hiccup "0.3.6"]
                  [clj-time "0.3.0"]
                 ]
-  :dev-dependencies [[lein-ring "0.4.0"]]
+  :dev-dependencies [[lein-ring "0.4.5"]]
   :ring {:handler blogjr.core/app}
   :repositories {"central-proxy" 
                  "http://repository.sonatype.org/content/repositories/central/"}
